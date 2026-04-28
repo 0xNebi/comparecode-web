@@ -43,7 +43,7 @@ export function Header() {
                   )}
                 />
                 <Icon className={cn("text-lg transition-colors duration-(--duration-medium)", isActive ? "text-white" : "text-text-secondary")} />
-                <span className="hidden sm:inline">{label}</span>
+                <span className={cn("sm:inline", isActive ? "inline" : "hidden")}>{label}</span>
               </button>
             );
           })}
