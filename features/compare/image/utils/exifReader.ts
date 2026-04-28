@@ -1,9 +1,3 @@
-/**
- * Minimal EXIF reader using only browser native APIs (no external deps).
- * Reads EXIF data from JPEG files (the only format that reliably embeds EXIF).
- * Returns a flat key→value record, or null if not readable / not a JPEG.
- */
-
 const EXIF_TAGS: Record<number, string> = {
   0x010F: "Make",
   0x0110: "Model",

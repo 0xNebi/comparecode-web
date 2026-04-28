@@ -180,8 +180,6 @@ function SideBySideView() {
   );
 }
 
-// Fade View
-
 function FadeView() {
   const originalImage = useImageCompareStore((s) => s.originalImage);
   const modifiedImage = useImageCompareStore((s) => s.modifiedImage);
@@ -224,8 +222,6 @@ function FadeView() {
   );
 }
 
-// Slider/Swipe View 
-
 function SliderView() {
   const originalImage = useImageCompareStore((s) => s.originalImage);
   const modifiedImage = useImageCompareStore((s) => s.modifiedImage);
@@ -261,10 +257,8 @@ function SliderView() {
     const offY = (height - fitH) / 2;
     const divX = offX + (sliderRef.current / 100) * fitW;
 
-    // Draw modified image (right side / background)
     ctx.drawImage(mod, offX, offY, fitW, fitH);
 
-    // Draw original clipped to the left of the divider
     ctx.save();
     ctx.beginPath();
     ctx.rect(0, 0, divX, height);
@@ -272,7 +266,6 @@ function SliderView() {
     ctx.drawImage(orig, offX, offY, fitW, fitH);
     ctx.restore();
 
-    // Divider line — constrained to the image bounds
     ctx.save();
     ctx.beginPath();
     ctx.moveTo(divX, offY);
@@ -284,7 +277,6 @@ function SliderView() {
     ctx.stroke();
     ctx.restore();
 
-    // Drag handle
     const handleY = offY + fitH / 2;
     ctx.save();
     ctx.shadowColor = "rgba(0,0,0,0.25)";

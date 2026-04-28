@@ -52,7 +52,6 @@ export function ImageCompareToolbar() {
 
   return (
     <div className="flex flex-wrap items-center gap-2 border-b border-border-default bg-bg-primary px-3 py-2 sm:px-4">
-      {/* View mode buttons */}
       <div className="flex items-center gap-0.5 rounded-md border border-border-default bg-bg-secondary p-0.5">
         {MODES.map((mode) => (
           <button
@@ -74,7 +73,6 @@ export function ImageCompareToolbar() {
         ))}
       </div>
 
-      {/* Diff algorithm selector — only visible in diff mode */}
       {compareMode === "diff" && (
         <div className="flex items-center gap-2">
           <span className="text-xs text-text-secondary font-semibold hidden sm:inline">Algorithm</span>
@@ -87,10 +85,8 @@ export function ImageCompareToolbar() {
         </div>
       )}
 
-      {/* Spacer */}
       <div className="flex-1" />
 
-      {/* Right actions */}
       <Button
         variant={isMetadataPanelOpen ? "outline" : "ghost"}
         size="sm"

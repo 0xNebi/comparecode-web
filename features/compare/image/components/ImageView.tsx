@@ -17,7 +17,6 @@ export function ImageView() {
 
   return (
     <div className="flex h-full w-full flex-col bg-bg-secondary overflow-hidden">
-      {/* Header */}
       <div className="flex h-(--header-height) shrink-0 items-center border-b border-border-default bg-bg-primary px-3 sm:px-6">
         <div className="flex items-center gap-2 sm:gap-3">
           <MdImage className="text-xl sm:text-2xl text-text-secondary" />
@@ -25,25 +24,20 @@ export function ImageView() {
         </div>
       </div>
 
-      {/* If not both loaded — show upload panel */}
       {!bothLoaded ? (
         <div className="flex-1 flex flex-col overflow-auto custom-scrollbar">
           <ImageUploadPanel />
         </div>
       ) : (
         <>
-          {/* Toolbar */}
           <ImageCompareToolbar />
 
-          {/* Compact image info bar */}
           <ImageUploadPanel compact />
 
-          {/* Main comparison area */}
           <div className="flex-1 min-h-0 flex flex-col">
             <ImageCompareCanvas />
           </div>
 
-          {/* Metadata panel (collapsible) */}
           {isMetadataPanelOpen && (
             <div className="shrink-0 max-h-[45%] overflow-y-auto custom-scrollbar">
               <ImageMetadataPanel
