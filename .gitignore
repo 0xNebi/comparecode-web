@@ -8,6 +8,8 @@
 !.yarn/versions
 /coverage
 /.next/
+/.playwright-mcp/
+/.venv/
 /out/
 /build
 /dist
@@ -27,5 +29,3 @@ next-env.d.ts
 .vscode/
 .idea/
 .tmp/
-.next-dev-server.*.log
-.next-start-server.*.log
