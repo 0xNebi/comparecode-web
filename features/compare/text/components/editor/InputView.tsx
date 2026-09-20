@@ -20,7 +20,7 @@ export function InputView() {
   };
 
   return (
-    <div className="flex flex-col w-full h-full p-2 sm:p-4 bg-bg-secondary">
+    <div className="flex min-h-0 flex-col w-full h-full p-2 sm:p-4 bg-bg-secondary">
       <div className="flex items-center justify-between mb-2 px-1 sm:px-2 gap-2 sm:gap-4">
         <div className="flex w-full sm:flex-1 items-center justify-between gap-2">
           <div className="flex items-center gap-2">

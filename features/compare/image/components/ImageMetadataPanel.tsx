@@ -134,7 +134,7 @@ export function ImageMetadataPanel({ originalImage, modifiedImage }: ImageMetada
     <div className="flex flex-col gap-0 bg-bg-primary">
       <div className={cn(
         "flex gap-4 p-4",
-        originalImage && modifiedImage ? "flex-row" : "flex-col"
+        originalImage && modifiedImage ? "flex-col @2xl/image:flex-row" : "flex-col"
       )}>
         {originalImage && (
           <ImageMetaPanel

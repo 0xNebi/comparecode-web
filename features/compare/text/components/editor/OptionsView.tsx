@@ -14,7 +14,8 @@ import { Button } from "@/components/ui/Button";
 import { OptionsSection } from "@/components/settings/OptionsSection";
 import { AVAILABLE_FONTS } from "@/config/fonts";
 import { isSettingsSectionDirty } from "@/utils/settingsReset";
-import { MdRestartAlt } from "react-icons/md";
+import { useTextUIStore } from "@/features/compare/text/store/useTextUIStore";
+import { MdTextFields, MdTitle, MdVerticalSplit, MdViewAgenda } from "react-icons/md";
 
 const COMPARISON_SECTION_KEYS: Array<keyof AppSettings> = ["ignoreWhitespace", "precision"];
 const APPEARANCE_SECTION_KEYS: Array<keyof AppSettings> = ["isWordWrapEnabled", "fontSize", "fontFamily"];
@@ -24,13 +25,16 @@ const BUTTON_VISIBILITY_SECTION_KEYS: Array<keyof AppSettings> = ["isJumpButtons
 
 export function OptionsView() {
   return (
-    <div className="flex min-h-full flex-col gap-2 bg-hover-overlay p-2">
-      <ComparisonSection />
+    <div className="grid items-start gap-3 p-3 @xl/workspace:grid-cols-2 @4xl/workspace:grid-cols-3">
+      <div className="min-w-0 space-y-3">
+        <ComparisonSection />
+        <LayoutSection />
+      </div>
       <AppearanceSection />
-      <LayoutSection />
-      <MergeSection />
-      <ButtonVisibilitySection />
-      <ActionSection />
+      <div className="min-w-0 space-y-3">
+        <MergeSection />
+        <ButtonVisibilitySection />
+      </div>
     </div>
   );
 }
@@ -50,17 +54,23 @@ function ComparisonSection() {
         onChange={(e) => updateSettings({ ignoreWhitespace: e.target.checked })}
         label="Ignore Whitespace"
       />
-      <SelectionBar<PrecisionLevel>
+      <TextPrecisionControl />
+    </OptionsSection>
+  );
+}
+
+export function TextPrecisionControl() {
+  const { settings, updateSettings } = useSettingsStore();
+  return <SelectionBar<PrecisionLevel>
         options={[
-          { label: "Word", value: PrecisionLevel.Word },
-          { label: "Character", value: PrecisionLevel.Character }
+          { label: "Word", value: PrecisionLevel.Word, icon: <MdTextFields /> },
+          { label: "Character", value: PrecisionLevel.Character, icon: <MdTitle /> }
         ]}
         value={settings.precision}
         onChange={(value) => updateSettings({ precision: value })}
-        className="mt-2"
-      />
-    </OptionsSection>
-  );
+        className="w-auto"
+        buttonClassName="px-2"
+      />;
 }
 
 function AppearanceSection() {
@@ -103,7 +113,7 @@ function AppearanceSection() {
 }
 
 function LayoutSection() {
-  const { settings, updateSettings, resetSectionToDefaults } = useSettingsStore();
+  const { settings, resetSectionToDefaults } = useSettingsStore();
   const isSectionDirty = isSettingsSectionDirty(settings, LAYOUT_SECTION_KEYS);
 
   return (
@@ -112,17 +122,23 @@ function LayoutSection() {
       isDirty={isSectionDirty}
       onReset={() => resetSectionToDefaults(LAYOUT_SECTION_KEYS)}
     >
-      <SelectionBar<ViewMode>
+      <TextLayoutControl />
+    </OptionsSection>
+  );
+}
+
+export function TextLayoutControl() {
+  const { settings, updateSettings } = useSettingsStore();
+  return <SelectionBar<ViewMode>
         options={[
-          { label: "Split", value: ViewMode.Split },
-          { label: "Unified", value: ViewMode.Unified }
+          { label: "Split", value: ViewMode.Split, icon: <MdVerticalSplit /> },
+          { label: "Unified", value: ViewMode.Unified, icon: <MdViewAgenda /> }
         ]}
         value={settings.viewMode}
         onChange={(value) => updateSettings({ viewMode: value })}
-        className="mt-1"
-      />
-    </OptionsSection>
-  );
+        className="w-auto"
+        buttonClassName="px-2"
+      />;
 }
 
 function MergeSection() {
@@ -148,13 +164,15 @@ function MergeSection() {
 
 function ButtonVisibilitySection() {
   const { settings, updateSettings, resetSectionToDefaults } = useSettingsStore();
-  const isSectionDirty = isSettingsSectionDirty(settings, BUTTON_VISIBILITY_SECTION_KEYS);
+  const showTextTest = useTextUIStore((state) => state.showTextTest);
+  const setShowTextTest = useTextUIStore((state) => state.setShowTextTest);
+  const isSectionDirty = isSettingsSectionDirty(settings, BUTTON_VISIBILITY_SECTION_KEYS) || !showTextTest;
 
   return (
     <OptionsSection
       title="Button visibility"
       isDirty={isSectionDirty}
-      onReset={() => resetSectionToDefaults(BUTTON_VISIBILITY_SECTION_KEYS)}
+      onReset={() => { resetSectionToDefaults(BUTTON_VISIBILITY_SECTION_KEYS); setShowTextTest(true); }}
     >
       <Switch
         checked={settings.isJumpButtonsVisible}
@@ -169,12 +187,13 @@ function ButtonVisibilitySection() {
         label="Jump to next/previous"
         title="Shows floating merge jump buttons in the top-right corner so you can quickly jump to previous or next merge block."
       />
+      <Switch label="Show text test" checked={showTextTest} onChange={(event) => setShowTextTest(event.target.checked)} />
     </OptionsSection>
   );
 }
 
-function ActionSection() {
-  const { settings, resetToDefaults } = useSettingsStore();
+export function TextTestButton() {
+  const settings = useSettingsStore((state) => state.settings);
   const { setLeftText, setRightText } = useEditorStore();
   const { executeCompare } = useTextCompareActions();
 
@@ -185,23 +204,11 @@ function ActionSection() {
   };
 
   return (
-    <div className="mt-1 flex flex-col gap-1 pt-1">
-      <button
+      <Button size="sm" variant="primary"
         onClick={handleLoadTestData}
-        className="w-full py-2 bg-accent-primary text-white hover:bg-accent-hover rounded text-sm font-semibold transition-all shadow-sm"
       >
         Test text
-      </button>
-      <Button
-        variant="danger"
-        size="md"
-        onClick={resetToDefaults}
-        leftIcon={<MdRestartAlt className="text-lg" />}
-        className="mt-2 w-full"
-      >
-        Reset to defaults
       </Button>
-    </div>
   );
 }
 

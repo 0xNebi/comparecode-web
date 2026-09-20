@@ -1,5 +1,7 @@
 "use client";
 
+import { isWorkspaceShortcutBlocked } from "@/utils/workspaceKeyboard";
+
 import { useEffect, useRef } from "react";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdKeyboardDoubleArrowDown, MdKeyboardDoubleArrowUp } from "react-icons/md";
 import { useEditorStore } from "@/features/compare/text/store/useTextStore";
@@ -94,6 +96,7 @@ export function ComparisonView() {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (isWorkspaceShortcutBlocked(event)) return;
       const refs = storeRefs.current;
       const editableTarget = isEditableTarget(event.target);
       const key = event.key;

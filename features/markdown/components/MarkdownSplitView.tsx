@@ -129,7 +129,7 @@ export function MarkdownSplitView({
     const isEditorPaneVisible = mobileSplitPane === "editor";
 
     return (
-      <div ref={containerRef} className="flex w-full min-h-0 min-w-0 max-w-full flex-1 flex-col overflow-hidden bg-bg-primary max-sm:w-[100dvw] max-sm:max-w-[100dvw]">
+      <div ref={containerRef} className="flex w-full min-h-0 min-w-0 max-w-full flex-1 flex-col overflow-hidden bg-bg-primary">
         <div className="flex w-full min-w-0 max-w-full shrink-0 items-center gap-1 overflow-hidden border-b border-border-default bg-bg-secondary p-1">
           {(["editor", "preview"] as const).map((pane) => (
             <button

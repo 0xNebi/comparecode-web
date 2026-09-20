@@ -20,7 +20,7 @@ Keep comparison rules in services and diff utilities. Components may derive pres
 ## State and Settings
 
 - `store/useTextStore.ts` is the canonical owner of input text, comparison results, selected blocks, merge state, and the active text-history session.
-- `store/useTextUIStore.ts` owns transient workspace state such as input expansion, compare progress, sidebar visibility, and the active sidebar tab.
+- `store/useTextUIStore.ts` owns transient workspace state such as input expansion, compare progress, Options/Merge History visibility, and the session-only Show text test preference.
 - `store/useSettingsStore.ts` owns persisted application settings used by Text Compare, including precision, whitespace handling, layout, font, wrapping, merge behavior, and diff colors.
 
 Preserve the existing compatibility aliases exported by the feature stores unless a task explicitly includes their removal and all callers are updated.
@@ -39,6 +39,10 @@ Changes to saved snapshots, IndexedDB records, history keys, or compatibility be
 Use `ToolWorkspaceShell` for the feature workspace and reuse primitives from `components/ui`. Keep Text-only compositions inside the feature. Changes to shared primitives, responsive shell behavior, or theme tokens must also use `$comparecode-ui-components`.
 
 Preserve keyboard behavior, selected-block semantics, virtualized measurement, scroll targeting, and split/unified parity when changing the comparison UI.
+
+The compact toolbar exposes icon-labelled precision and layout selection bars when Options is closed. Opening Options places them inside Comparison and Layout, retaining the same canonical settings. `OptionsView` keeps the existing section resets; there is no global reset button. Button visibility contains Show text test, enabled by default. It controls the primary Test text action at the start of the toolbar without persisting a new preference, and the Button visibility reset restores it to enabled. Merge History opens from the icon beside Options in an animated, non-modal right sidebar. Input and comparison remain separate, stable children of the shell; changing navigation width or opening details does not remount them. The input occupies half the available content height when expanded alongside a result, with a 16rem input minimum and a 12rem result minimum. The surrounding workspace scrolls on short screens so controls remain reachable. A collapsed input stays mounted but is inert.
+
+`O`, `E`, and diff navigation respect `utils/workspaceKeyboard.ts`: tool controls, open menus, and modal navigation must not activate background workspace shortcuts. Existing editable-target and modifier exclusions still apply. See [Workspace UI](workspace-ui.md) for shell and navigation ownership.
 
 ## Validation Map
 

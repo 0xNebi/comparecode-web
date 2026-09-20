@@ -9,7 +9,8 @@
 
 ## Working Agreements
 
-- Keep changes focused on the active task. Preserve unrelated user changes and do not include them in edits, staging, commits, cleanup, or validation fixes.
+- Complete the user's requested task across all affected areas. Preserve unrelated user changes and do not include them in edits, staging, commits, cleanup, or validation fixes.
+- During implementation, follow the user's requested scope without imposing branch or PR size limits from contributor guidance. Evaluate contributor PR scope expectations only during a requested review using the code-review skill.
 - Prefer maintainable, long-term solutions that follow existing patterns. Avoid quick fixes, speculative abstractions, and unrelated refactors.
 - Before editing, inspect the target code, its tests, its callers, and directly affected integration points in proportion to the change.
 - Treat tests as behavior contracts. Fix production regressions instead of weakening, deleting, or bypassing tests; update expectations only for an explicitly accepted behavior change.
@@ -74,7 +75,7 @@
 
 - Creating or switching branches, committing, pushing, opening pull requests, and merging require explicit user authorization for that action.
 - In the user's terminology, `dev`, `develop`, and `developer` refer to the repository's actual `development` branch.
-- Never commit directly to, merge locally into, or push directly to `development` or `main`. Create focused English `feature/*` or `fix/*` branches from the latest fetched canonical `development` branch.
+- Never commit directly to, merge locally into, or push directly to `development` or `main`. Create English `feature/*` or `fix/*` branches from the latest fetched canonical `development` branch.
 - Default every pull request to `development`. Do not open a pull request to `main` unless the user explicitly authorizes that exact target in the current task.
 - Create commits only through `$comparecode-git-workflow`. Every commit requires a DCO sign-off and an English subject-only Conventional Commit message.
 - Treat commits created by the user as legitimate repository history. Refresh status and history, build on them normally, and never amend, squash, rebase, reset, or otherwise rewrite them without an explicit request.

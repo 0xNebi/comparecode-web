@@ -20,6 +20,7 @@ Prioritize concrete production risk and must-fix issues over stylistic preferenc
 9. Check material performance risks such as N+1 access, repeated IndexedDB writes, avoidable rerenders, unbounded work, and expensive render-path calculations.
 10. Require targeted tests for meaningful logic and regression risks. For UI changes, require a focused manual walkthrough or browser evidence when automated coverage is insufficient.
 11. Confirm relevant lint, tests, and build checks are reported honestly. Identify any validation gap that must be closed before merge.
+12. For PR reviews, read the scope expectations in `CONTRIBUTING.md`, including its one-feature/fix rule. Evaluate cohesion, reviewability, and evidence across the complete change. Report deviations and recommend splitting when unrelated changes or insufficient evidence create a concrete review risk. Account for explicitly authorized cross-feature work; size or multiple affected features alone is not an automatic merge blocker. These review criteria do not impose implementation-time branch or task splitting.
 
 Do not treat an `aria-label`-only concern as a merge blocker unless the user explicitly included it in scope. Continue to flag broken keyboard, focus, role, or interaction behavior when it has real user impact.
 

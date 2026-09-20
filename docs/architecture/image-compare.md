@@ -41,7 +41,11 @@ Reuse primitives from `components/ui` and keep Image-only controls inside the fe
 
 Image comparison is canvas- and browser-dependent. Treat pointer gestures, zoom, pan, slider boundaries, image load failures, clipboard input, object URLs, and differing dimensions as material behavior.
 
+The feature keeps its own compact comparison toolbar above the canvas within the common application navigation. Mode controls use a segmented control in wide image containers and a dropdown in narrow ones; both use the same canonical mode setter. The metadata area scrolls independently with a bounded height. Hiding metadata retains its component while removing hidden controls from navigation. On narrow screens, alignment controls sit below the preview with an independently scrolling form rather than covering the preview. These layout changes must not update image identity, zoom/pan state, or stored transforms. See [Workspace UI](workspace-ui.md) for common navigation and popups.
+
 ## Validation Map
+
+Metadata cards stack below the image container's two-column breakpoint so file sizes, dimensions, and hashes remain readable on narrow screens.
 
 - Image state and object-URL lifecycle: run `features/compare/image/store/__tests__/useImageCompareStore.test.ts`.
 - Diff, alignment, transform, or metadata logic: add or run focused tests for the changed service or utility when deterministic automation is practical.

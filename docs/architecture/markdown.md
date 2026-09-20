@@ -26,7 +26,7 @@ The preview pipeline uses Remark plugins, raw HTML parsing, the feature-owned sa
 ## State and Persistence
 
 - `store/useMarkdownStore.ts` owns Markdown content, debounced durable saves, undo/redo state, and the bounded session history.
-- `store/useMarkdownUIStore.ts` owns view mode, split size, scroll sync, editor font size, wrapping, and sidebar state.
+- `store/useMarkdownUIStore.ts` owns view mode, split size, scroll sync, editor font size, wrapping, and Options/Markdown History panel state.
 - `services/markdownStorage.ts` owns the released local-storage and session-storage keys and their serialized shapes.
 
 Markdown content and persisted UI preferences are durable local data. Undo/redo history is session-scoped. Changes to keys, stored shapes, defaults, compatibility readers, or durability must also use `$comparecode-data-migration` and follow `docs/PERSISTENCE_MIGRATIONS.md`.
@@ -45,6 +45,8 @@ Treat file content, clipboard HTML, raw Markdown HTML, Mermaid source, links, an
 Use `ToolWorkspaceShell` and shared primitives from `components/ui`. Keep Markdown-only components and product rules in the feature. Changes to shared controls, responsive shell behavior, or theme tokens must also use `$comparecode-ui-components`.
 
 Preserve selection and focus after formatting, undo/redo checkpoints, split resizing, scroll synchronization, and editor/preview/split parity.
+
+Options opens above the editor in the shell's scrollable details area. The icon-labelled Editor/Split/Preview selection bar appears in the compact toolbar with details closed and moves into Layout when open. Session history opens from the icon beside Options in an animated, non-modal right sidebar. The toolbar and editor/preview subtree stay mounted when shell controls change. The mobile view uses its available container width rather than the viewport width, preventing overflow beside application navigation. Formatting popups use the shared portal-based `PopoverMenu` so toolbars cannot clip them. The `O` shortcut opens Options and respects tool controls and modal navigation. See [Workspace UI](workspace-ui.md).
 
 ## Validation Map
 

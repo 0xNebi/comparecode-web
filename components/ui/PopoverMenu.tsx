@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, type ButtonHTMLAttributes, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, type RefObject } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ButtonHTMLAttributes, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, type RefObject, type CSSProperties } from "react";
+import { createPortal } from "react-dom";
 import { cn } from "@/utils/uiHelpers";
 
 interface PopoverMenuProps {
@@ -25,6 +26,32 @@ export function PopoverMenu({
   onKeyDown
 }: PopoverMenuProps) {
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
+  const [position, setPosition] = useState<CSSProperties>({ position: "fixed", visibility: "hidden", width: "max-content", maxWidth: "calc(100vw - 16px)" });
+
+  useLayoutEffect(() => {
+    if (!isOpen) return;
+    const updatePosition = () => {
+      const trigger = triggerRef.current;
+      const menu = menuRef.current;
+      if (!trigger || !menu) return;
+      setPortalTarget(trigger.closest("dialog") ?? document.body);
+      const rect = trigger.getBoundingClientRect();
+      const width = Math.min(role === "listbox" ? rect.width : Math.max(rect.width, menu.scrollWidth), window.innerWidth - 16);
+      const below = window.innerHeight - rect.bottom - 12;
+      const above = rect.top - 12;
+      const placeAbove = below < Math.min(menu.scrollHeight, 224) && above > below;
+      const left = Math.max(8, Math.min(align === "end" ? rect.right - width : rect.left, window.innerWidth - width - 8));
+      const next: CSSProperties = { position: "fixed", visibility: "visible", width, left, top: placeAbove ? undefined : rect.bottom + 4, bottom: placeAbove ? window.innerHeight - rect.top + 4 : undefined, maxHeight: Math.max(40, placeAbove ? above : below) };
+      setPosition((previous) => JSON.stringify(previous) === JSON.stringify(next) ? previous : next);
+    };
+    updatePosition();
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updatePosition);
+    if (triggerRef.current) observer?.observe(triggerRef.current);
+    window.addEventListener("resize", updatePosition);
+    window.addEventListener("scroll", updatePosition, true);
+    return () => { observer?.disconnect(); window.removeEventListener("resize", updatePosition); window.removeEventListener("scroll", updatePosition, true); };
+  }, [align, isOpen, portalTarget, role, triggerRef]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -47,16 +74,17 @@ export function PopoverMenu({
       }
 
       event.preventDefault();
+      event.stopImmediatePropagation();
       onOpenChange(false);
       triggerRef.current?.focus();
     };
 
     document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("keydown", handleEscape);
+    document.addEventListener("keydown", handleEscape, true);
 
     return () => {
       document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener("keydown", handleEscape, true);
     };
   }, [isOpen, onOpenChange, triggerRef]);
 
@@ -64,19 +92,20 @@ export function PopoverMenu({
     return null;
   }
 
-  return (
+  return createPortal(
     <div
       ref={menuRef}
       role={role}
+      style={position}
       className={cn(
-        "absolute top-full z-20 mt-1 rounded-md border border-border-default bg-bg-primary shadow-lg",
-        align === "end" ? "right-0" : "left-0",
+        "z-[70] overflow-y-auto rounded-xl border border-border-default bg-bg-primary shadow-lg",
         className
       )}
       onKeyDown={onKeyDown}
     >
       {children}
-    </div>
+    </div>,
+    portalTarget ?? document.body
   );
 }
 

@@ -59,7 +59,7 @@
 }
 
 :root {
-  --header-height: 3rem;
+  --header-height: 3.75rem;
   --input-panel-height: 45vh;
   --input-panel-min-height: 25vh;
   --row-min-height: 1.5rem;
@@ -138,6 +138,12 @@ button:not(:disabled) {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0ms !important;
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+  }
   .cc-animate-fade-in-up,
   .cc-animate-fade-in,
   .cc-animate-scale-in {
