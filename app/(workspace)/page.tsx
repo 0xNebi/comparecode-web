@@ -3,7 +3,7 @@ import Link from "next/link";
 import { MdArticle, MdCode, MdImage, MdHistory, MdSettings, MdArrowOutward } from "react-icons/md";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { HomeSeoContent } from "@/components/seo/SeoContent";
-import { homeMetadata, softwareApplicationJsonLd } from "@/config/seo";
+import { homeMetadata, SITE_ICON_PATH, softwareApplicationJsonLd } from "@/config/seo";
 
 export const metadata = homeMetadata;
 
@@ -53,7 +53,7 @@ export default function Home() {
           <div className="mb-5 border-b border-border-default pb-5 sm:mb-8 sm:pb-6">
             <div className="cc-animate-fade-in-up flex min-w-0 flex-col items-start gap-3 p-1 sm:inline-flex sm:flex-row sm:items-center sm:p-1.5">
               <Image
-                src="/brand/comparecode-logo.png"
+                src={SITE_ICON_PATH}
                 alt="CompareCode"
                 width={64}
                 height={64}

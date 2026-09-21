@@ -11,6 +11,7 @@ import { ThemeSelect } from "@/components/settings/ThemeSelect";
 import { cn } from "@/utils/uiHelpers";
 import { useWorkspaceSidebar } from "./WorkspaceSidebarContext";
 import { WORKSPACE_MEDIA } from "@/config/responsive";
+import { SITE_ICON_PATH } from "@/config/seo";
 
 const navItems = [
   { href: "/", label: "Home", icon: MdHome },
@@ -53,7 +54,7 @@ export function NavigationSidebar() {
 
   const brand = (mobile: boolean) => (
     <Link href="/" onClick={() => setMobileOpen(false)} className={cn("flex min-w-0 items-center gap-2 overflow-hidden whitespace-nowrap text-base font-bold text-text-primary", !mobile && "hidden @min-[12rem]/navigation:flex")}>
-      <Image src="/brand/comparecode-logo.png" alt="CompareCode" width={30} height={30} priority className="shrink-0 rounded-lg" />
+      <Image src={SITE_ICON_PATH} alt="CompareCode" width={30} height={30} priority className="shrink-0 rounded-lg" />
       <span>Compare<span className="text-accent-primary">Code</span></span>
     </Link>
   );
