@@ -55,7 +55,10 @@ describe("Settings presentation", () => {
     act(() => useSettingsStore.getState().updateSettings({ customDiffAddedBg: "#abcdef" }));
     expect(document.documentElement.style.getPropertyValue("--diff-added-bg")).toBe("#abcdef");
 
-    await user.click(screen.getByRole("button", { name: "Restore Appearance defaults" }));
+    const reset = screen.getByRole("button", { name: "Restore Appearance defaults" });
+    expect(reset).toHaveTextContent("");
+    expect(screen.queryByText("Reset section")).not.toBeInTheDocument();
+    await user.click(reset);
     expect(useSettingsStore.getState().settings).toMatchObject({
       theme: defaultSettings.theme,
       useCustomHighlightColors: defaultSettings.useCustomHighlightColors,
@@ -65,7 +68,7 @@ describe("Settings presentation", () => {
     expect(document.documentElement.style.getPropertyValue("--diff-added-bg")).toBe("");
 
     act(() => useSettingsStore.getState().updateSettings({ theme: "nord" }));
-    await user.click(screen.getByRole("button", { name: "Restore Date & Time defaults" }));
+    await user.click(screen.getByRole("button", { name: "Restore Date & time defaults" }));
     expect(useSettingsStore.getState().settings).toMatchObject({
       theme: "nord", fontSize: 20, timeFormat: defaultSettings.timeFormat, dateFormat: defaultSettings.dateFormat
     });

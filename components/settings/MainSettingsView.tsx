@@ -68,7 +68,7 @@ export function MainSettingsView() {
 
       <div className="p-4 sm:p-8">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
-          <OptionsSection title="Appearance" description="Theme and text difference highlights." showResetLabel isDirty={isAppearanceSectionDirty} onReset={() => resetSectionToDefaults(APPEARANCE_SECTION_KEYS)}>
+          <OptionsSection title="Appearance" description="Theme and text difference highlights." isDirty={isAppearanceSectionDirty} onReset={() => resetSectionToDefaults(APPEARANCE_SECTION_KEYS)}>
             <div className="grid items-start gap-6 pt-4 @3xl/settings:grid-cols-2">
             <div className="@container/colors min-w-0 space-y-4">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-2 gap-2">
@@ -118,7 +118,7 @@ export function MainSettingsView() {
                 <div className="grid grid-cols-1 gap-4 @min-[32rem]/colors:grid-cols-2">
                   <div className="flex flex-col gap-3">
                     <ColorInput
-                      label="Original Foreground"
+                      label="Original foreground"
                       value={settings.customDiffRemovedFg}
                       onChange={(value) => updateSettings({ customDiffRemovedFg: value })}
                       onRestoreDefault={() => updateSettings({ customDiffRemovedFg: themeHighlightDefaults.diffRemovedFg })}
@@ -130,7 +130,7 @@ export function MainSettingsView() {
                       pickerFallback="#fdb8c0"
                     />
                     <ColorInput
-                      label="Original Background"
+                      label="Original background"
                       value={settings.customDiffRemovedBg}
                       onChange={(value) => updateSettings({ customDiffRemovedBg: value })}
                       onRestoreDefault={() => updateSettings({ customDiffRemovedBg: themeHighlightDefaults.diffRemovedBg })}
@@ -145,7 +145,7 @@ export function MainSettingsView() {
 
                   <div className="flex flex-col gap-3">
                     <ColorInput
-                      label="Modified Foreground"
+                      label="Modified foreground"
                       value={settings.customDiffAddedFg}
                       onChange={(value) => updateSettings({ customDiffAddedFg: value })}
                       onRestoreDefault={() => updateSettings({ customDiffAddedFg: themeHighlightDefaults.diffAddedFg })}
@@ -157,7 +157,7 @@ export function MainSettingsView() {
                       pickerFallback="#acf2bd"
                     />
                     <ColorInput
-                      label="Modified Background"
+                      label="Modified background"
                       value={settings.customDiffAddedBg}
                       onChange={(value) => updateSettings({ customDiffAddedBg: value })}
                       onRestoreDefault={() => updateSettings({ customDiffAddedBg: themeHighlightDefaults.diffAddedBg })}
@@ -177,11 +177,11 @@ export function MainSettingsView() {
             </div>
           </OptionsSection>
 
-          <OptionsSection title="Date & Time" description="Choose how dates and times appear across the application." showResetLabel isDirty={isDateTimeSectionDirty} onReset={() => resetSectionToDefaults(DATE_TIME_SECTION_KEYS)}>
+          <OptionsSection title="Date & time" description="Choose how dates and times appear across the application." isDirty={isDateTimeSectionDirty} onReset={() => resetSectionToDefaults(DATE_TIME_SECTION_KEYS)}>
             <div className="grid gap-6 pt-4 @3xl/settings:grid-cols-2">
 
             <div className="flex min-w-0 flex-col gap-2">
-              <span className="text-sm sm:text-base font-medium text-text-primary">Date Format</span>
+              <span className="text-sm sm:text-base font-medium text-text-primary">Date format</span>
               <SelectDropdown
                 className="w-full"
                 value={settings.dateFormat}
@@ -191,7 +191,7 @@ export function MainSettingsView() {
             </div>
 
             <div className="flex min-w-0 flex-col gap-2">
-              <span className="text-sm sm:text-base font-medium text-text-primary">Time Format</span>
+              <span className="text-sm sm:text-base font-medium text-text-primary">Time format</span>
               <SelectDropdown
                 className="w-full"
                 value={settings.timeFormat}

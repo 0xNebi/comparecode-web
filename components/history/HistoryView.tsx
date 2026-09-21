@@ -191,7 +191,7 @@ export function HistoryView() {
                 title="Clear all history"
                 className="min-h-10"
               >
-                Delete All
+                Delete all
               </Button>
           </div>
         )}

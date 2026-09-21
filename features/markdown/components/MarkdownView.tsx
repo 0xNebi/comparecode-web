@@ -17,7 +17,7 @@ function MarkdownLoadingView() {
     <div className="grid min-h-0 min-w-0 flex-1 overflow-hidden bg-bg-primary sm:grid-cols-[1fr_0.5rem_1fr]">
       <section className="min-h-0 min-w-0 overflow-hidden border-r border-border-default max-sm:border-r-0">
         <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden">
-          <div className="flex h-9 shrink-0 items-center border-b border-border-default bg-bg-secondary px-3 text-xs font-bold uppercase tracking-wider text-text-secondary">
+          <div className="flex h-9 shrink-0 items-center border-b border-border-default bg-bg-secondary px-3 text-xs font-bold text-text-secondary">
             Markdown
           </div>
           <div className="flex min-h-0 flex-1 items-center justify-center bg-bg-primary text-sm font-semibold text-text-secondary">
@@ -28,7 +28,7 @@ function MarkdownLoadingView() {
       <div className="min-h-0 bg-border-default/35 max-sm:hidden" />
       <section className="min-h-0 min-w-0 overflow-hidden max-sm:hidden">
         <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden">
-          <div className="flex h-9 shrink-0 items-center border-b border-border-default bg-bg-secondary px-3 text-xs font-bold uppercase tracking-wider text-text-secondary">
+          <div className="flex h-9 shrink-0 items-center border-b border-border-default bg-bg-secondary px-3 text-xs font-bold text-text-secondary">
             Preview
           </div>
           <div className="min-h-0 flex-1 bg-bg-primary" />
@@ -93,7 +93,7 @@ export function MarkdownView() {
       toolIcon={MdArticle}
       tabs={[
         { value: "options", title: "Options", icon: MdTune, content: <MarkdownOptionsView /> },
-        { value: "history", title: "Markdown History", placement: "right", icon: MdHistory, content: <MarkdownHistoryView /> }
+        { value: "history", title: "Markdown history", placement: "right", icon: MdHistory, content: <MarkdownHistoryView /> }
       ]}
     >
       <MarkdownToolbar

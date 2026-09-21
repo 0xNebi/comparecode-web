@@ -167,7 +167,7 @@ export function MarkdownToolbar({ onFormat, onUndo, onRedo, canUndo, canRedo, is
               <span className="text-lg"><MdTableChart /></span>
             </IconButton>
             <PopoverMenu isOpen={isTableMenuOpen} onOpenChange={setIsTableMenuOpen} triggerRef={tableTriggerRef} className="w-52 p-3">
-              <div className="mb-2 text-xs font-bold uppercase tracking-wider text-text-secondary">
+              <div className="mb-2 text-xs font-bold text-text-secondary">
                 Insert table
               </div>
               <div className="grid grid-cols-2 gap-2">

@@ -6,7 +6,8 @@ import { ToolWorkspaceShell } from "@/components/layout/ToolWorkspaceShell";
 import { useOptionsPanelShortcut } from "@/components/layout/useOptionsPanelShortcut";
 import { useEditorStore } from "@/features/compare/text/store/useTextStore";
 import { useEditorUIStore } from "@/features/compare/text/store/useTextUIStore";
-import { OptionsView, TextLayoutControl, TextPrecisionControl, TextTestButton } from "./OptionsView";
+import { OptionsView, TextTestButton } from "./OptionsView";
+import { CompactTextOptions } from "./CompactTextOptions";
 import { MergeHistoryView } from "./MergeHistoryView";
 import { InputView } from "./InputView";
 import { ComparisonView } from "@/features/compare/text/components/diff/ComparisonView";
@@ -73,16 +74,13 @@ export function EditorView() {
       onPanelTabChange={setOptionsPanelTab}
       toolTitle="Text compare"
       toolIcon={MdCode}
-      compactControls={<>
+      compactControls={<div className="flex min-w-0 flex-1 items-center gap-3 self-stretch">
         {showTextTest && <TextTestButton />}
-        {!(isOptionsPanelOpen && optionsPanelTab === "options") && <>
-        <div className="flex items-center gap-1.5"><span className="hidden text-xs text-text-secondary @3xl/workspace:inline">Comparison</span><TextPrecisionControl /></div>
-        <div className="flex items-center gap-1.5"><span className="hidden text-xs text-text-secondary @3xl/workspace:inline">Layout</span><TextLayoutControl /></div>
-        </>}
-      </>}
+        {!(isOptionsPanelOpen && optionsPanelTab === "options") && <CompactTextOptions />}
+      </div>}
       tabs={[
         { value: "options", title: "Options", icon: MdTune, content: <OptionsView /> },
-        { value: "history", title: "Merge History", placement: "right", icon: MdHistory, content: <MergeHistoryView /> }
+        { value: "history", title: "Merge history", placement: "right", icon: MdHistory, content: <MergeHistoryView /> }
       ]}
     >
       <div
@@ -103,10 +101,10 @@ export function EditorView() {
               "inline-flex items-center gap-2 rounded-md bg-accent-primary px-3 py-1.5 text-sm font-semibold text-white shadow-sm transition-colors duration-(--duration-short) focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary focus-visible:ring-offset-2",
               isInputEditorToggleDisabled ? "cursor-not-allowed opacity-60" : "hover:bg-accent-hover"
             )}
-            title={isInputExpanded ? "Hide Input Editor" : "Show Input Editor"}
+            title={isInputExpanded ? "Hide input editor (E)" : "Show input editor (E)"}
           >
             <MdBorderColor className="text-base shrink-0" />
-            <span>Input Editor (E)</span>
+            <span>Input editor</span>
             {isInputExpanded ? <MdKeyboardArrowDown className="text-xl shrink-0" /> : <MdKeyboardArrowUp className="text-xl shrink-0" />}
           </button>
         </div>

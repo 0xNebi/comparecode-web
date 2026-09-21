@@ -47,7 +47,7 @@ export function ColorInput({
 
   return (
     <label className="flex min-w-0 flex-col gap-1">
-      <span className="text-xs font-semibold uppercase tracking-wider text-text-secondary">{label}</span>
+      <span className="text-xs font-semibold text-text-secondary">{label}</span>
       <div className="flex min-w-0 items-center gap-2">
         <input
           type="text"

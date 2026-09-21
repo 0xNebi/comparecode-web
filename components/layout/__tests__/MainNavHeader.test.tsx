@@ -34,8 +34,9 @@ describe("Workspace navigation", () => {
     await user.click(screen.getByRole("button", { name: "Toggle navigation labels" }));
     await user.click(within(nav).getByRole("button", { name: "History" }));
     expect(navigation.replace).toHaveBeenCalledWith("/history");
-    expect(screen.getByTitle("GitHub")).toHaveAttribute("href", "https://github.com/comparecode-web/comparecode-web");
-    expect(screen.getByTitle("GitHub").closest("aside")).toContainElement(screen.getByRole("button", { name: /^Theme:/ }));
+    expect(nav.closest("aside")?.querySelector("[title], [data-tooltip]")).toBeNull();
+    expect(screen.getByRole("link", { name: "GitHub" })).toHaveAttribute("href", "https://github.com/comparecode-web/comparecode-web");
+    expect(screen.getByRole("link", { name: "GitHub" }).closest("aside")).toContainElement(screen.getByRole("button", { name: /^Theme:/ }));
   });
 
   it("opens mobile navigation on any route and closes after a destination is selected", async () => {

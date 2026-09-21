@@ -42,7 +42,7 @@ export function ComparisonToolbar() {
         </div>
       </div>
 
-      <button onClick={() => executeSwap(settings)} className="mx-1 @3xl/workspace:mx-4 text-2xl text-accent-primary hover:bg-hover-overlay p-2 rounded transition-colors duration-(--duration-short) shrink-0" title="Swap Sides">
+      <button onClick={() => executeSwap(settings)} className="mx-1 @3xl/workspace:mx-4 text-2xl text-accent-primary hover:bg-hover-overlay p-2 rounded transition-colors duration-(--duration-short) shrink-0" title="Swap sides">
         <MdSwapHoriz />
       </button>
 
@@ -90,7 +90,7 @@ interface CopyButtonProps {
 
 function CopyButton({ text, side, copiedSide, onCopy }: CopyButtonProps) {
   const isCopied = copiedSide === side;
-  const title = side === "left" ? "Copy Original Text" : "Copy Modified Text";
+  const title = side === "left" ? "Copy original text" : "Copy modified text";
 
   const isDisabled = isCopied || !text?.trim();
 
@@ -134,6 +134,5 @@ function ClearButton({ onClear }: ClearButtonProps) {
     </>
   );
 }
-
 
 

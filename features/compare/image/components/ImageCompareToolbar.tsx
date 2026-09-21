@@ -14,7 +14,7 @@ import {
 } from "../store/useImageCompareStore";
 
 const MODES: Array<{ value: ImageCompareMode; label: string }> = [
-  { value: "side-by-side", label: "Side by Side" },
+  { value: "side-by-side", label: "Side by side" },
   { value: "fade", label: "Fade" },
   { value: "slider", label: "Slider" },
   { value: "diff", label: "Advanced" },
@@ -28,9 +28,9 @@ const DIFF_ALGORITHMS: { value: DiffAlgorithm; label: string }[] = [
   { value: "perceptual",    label: "Perceptual (ΔE)" },
   { value: "heatmap",       label: "Heatmap" },
   { value: "ssim",          label: "SSIM" },
-  { value: "edge",          label: "Edge / Outline" },
-  { value: "threshold",     label: "Threshold Mask" },
-  { value: "channel-split", label: "Channel Split" },
+  { value: "edge",          label: "Edge / outline" },
+  { value: "threshold",     label: "Threshold mask" },
+  { value: "channel-split", label: "Channel split" },
 ];
 
 export function ImageCompareToolbar() {
@@ -53,7 +53,7 @@ export function ImageCompareToolbar() {
           options={MODES}
           value={compareMode}
           onChange={setCompareMode}
-          buttonClassName="whitespace-nowrap px-2"
+          buttonClassName="whitespace-nowrap px-3"
         />
       </div>
       <SelectDropdown

@@ -87,7 +87,7 @@ function ImageUploadSlot({ label, image, onImageLoad, onClear }: ImageUploadSlot
       <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3 rounded-xl border border-border-default bg-bg-primary p-4 shadow-sm">
         <div className="min-w-0 flex flex-col gap-0.5 shrink-0">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="text-xs font-semibold text-text-secondary uppercase tracking-wide">{label}</span>
+            <span className="text-xs font-semibold text-text-secondary">{label}</span>
             <span className={cn("text-xs font-bold shrink-0", dimensionsClassName)}>{`${image.width}x${image.height}`}</span>
             <Button
               variant="danger"
@@ -101,7 +101,7 @@ function ImageUploadSlot({ label, image, onImageLoad, onClear }: ImageUploadSlot
           </div>
           <p className="text-xs text-text-secondary truncate" title={image.name}>{image.name}</p>
         </div>
-        <div className="relative rounded-lg border border-border-default bg-bg-secondary overflow-hidden flex flex-1 items-center justify-center min-h-[120px]">
+        <div className="relative rounded-lg border border-border-default bg-bg-secondary overflow-hidden flex flex-1 items-center justify-center min-h-30">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={image.url}
@@ -115,7 +115,7 @@ function ImageUploadSlot({ label, image, onImageLoad, onClear }: ImageUploadSlot
 
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3 rounded-xl border border-border-default bg-bg-primary p-4 shadow-sm">
-      <span className="text-xs font-semibold text-text-secondary uppercase tracking-wide">{label}</span>
+      <span className="text-xs font-semibold text-text-secondary">{label}</span>
       <div
         role="button"
         tabIndex={0}

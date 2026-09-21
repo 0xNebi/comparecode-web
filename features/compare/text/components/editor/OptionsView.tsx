@@ -52,7 +52,7 @@ function ComparisonSection() {
       <Switch
         checked={settings.ignoreWhitespace}
         onChange={(e) => updateSettings({ ignoreWhitespace: e.target.checked })}
-        label="Ignore Whitespace"
+        label="Ignore whitespace"
       />
       <TextPrecisionControl />
     </OptionsSection>
@@ -69,12 +69,12 @@ export function TextPrecisionControl() {
         value={settings.precision}
         onChange={(value) => updateSettings({ precision: value })}
         className="w-auto"
-        buttonClassName="px-2"
+        buttonClassName="px-3"
       />;
 }
 
 function AppearanceSection() {
-  const { settings, updateSettings, resetSectionToDefaults } = useSettingsStore();
+  const { settings, resetSectionToDefaults } = useSettingsStore();
   const isSectionDirty = isSettingsSectionDirty(settings, APPEARANCE_SECTION_KEYS);
 
   return (
@@ -83,33 +83,31 @@ function AppearanceSection() {
       isDirty={isSectionDirty}
       onReset={() => resetSectionToDefaults(APPEARANCE_SECTION_KEYS)}
     >
-      <Switch
-        checked={settings.isWordWrapEnabled}
-        onChange={(e) => updateSettings({ isWordWrapEnabled: e.target.checked })}
-        label="Word Wrap"
-        containerClassName="mt-1"
-      />
-      <Slider
-        min={UI_CONSTANTS.MIN_FONT_SIZE}
-        max={UI_CONSTANTS.MAX_FONT_SIZE}
-        step="1"
-        value={settings.fontSize}
-        onChange={(e) => updateSettings({ fontSize: parseInt(e.target.value, 10) })}
-        label="Font Size"
-        displayValue={`${settings.fontSize}px`}
-        containerClassName="mt-2"
-      />
-      <div className="flex flex-col gap-1 mt-1">
-        <span className="text-sm font-medium text-text-primary">Font Family</span>
-        <SelectDropdown
-          value={settings.fontFamily}
-          onChange={(value) => updateSettings({ fontFamily: value })}
-          options={AVAILABLE_FONTS.map((font) => ({ value: font.value, label: font.name }))}
-          triggerClassName="py-1.5"
-        />
-      </div>
+      <TextWordWrapControl />
+      <TextFontSizeControl />
+      <div className="flex flex-col gap-1"><span className="text-sm font-medium text-text-primary">Font family</span><TextFontFamilyControl /></div>
     </OptionsSection>
   );
+}
+
+export function TextWordWrapControl() {
+  const { settings, updateSettings } = useSettingsStore();
+  return <Switch checked={settings.isWordWrapEnabled} onChange={(event) => updateSettings({ isWordWrapEnabled: event.target.checked })} label="Word wrap" />;
+}
+
+export function TextFontSizeControl() {
+  const { settings, updateSettings } = useSettingsStore();
+  return <Slider min={UI_CONSTANTS.MIN_FONT_SIZE} max={UI_CONSTANTS.MAX_FONT_SIZE} step="1"
+    value={settings.fontSize} onChange={(event) => updateSettings({ fontSize: parseInt(event.target.value, 10) })}
+    label="Font size" displayValue={`${settings.fontSize}px`} />;
+}
+
+export function TextFontFamilyControl() {
+  const { settings, updateSettings } = useSettingsStore();
+  return <SelectDropdown label="Font family" value={settings.fontFamily}
+    onChange={(value) => updateSettings({ fontFamily: value })}
+    options={AVAILABLE_FONTS.map((font) => ({ value: font.value, label: font.name }))}
+    triggerClassName="py-1.5 whitespace-nowrap" />;
 }
 
 function LayoutSection() {
@@ -137,7 +135,7 @@ export function TextLayoutControl() {
         value={settings.viewMode}
         onChange={(value) => updateSettings({ viewMode: value })}
         className="w-auto"
-        buttonClassName="px-2"
+        buttonClassName="px-3"
       />;
 }
 
@@ -204,7 +202,7 @@ export function TextTestButton() {
   };
 
   return (
-      <Button size="sm" variant="primary"
+      <Button size="sm" variant="primary" className="shrink-0 whitespace-nowrap"
         onClick={handleLoadTestData}
       >
         Test text

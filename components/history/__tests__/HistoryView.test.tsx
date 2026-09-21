@@ -153,13 +153,13 @@ describe("HistoryView", () => {
     expect(screen.queryByText("text-1 text")).not.toBeInTheDocument();
   });
 
-  it("keeps Delete All scoped to the whole history database", async () => {
+  it("keeps Delete all scoped to the whole history database", async () => {
     const user = userEvent.setup();
     historyStoreMock.items = [createTextItem("text-1"), createImageItem("image-1")];
 
     render(<HistoryView />);
 
-    await user.click(screen.getByRole("button", { name: "Delete All" }));
+    await user.click(screen.getByRole("button", { name: "Delete all" }));
 
     expect(window.confirm).toHaveBeenCalledWith("You are about to delete the whole history database, including items hidden by the current filter. Are you sure?");
     await waitFor(() => {

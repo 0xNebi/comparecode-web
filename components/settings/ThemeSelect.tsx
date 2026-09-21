@@ -19,7 +19,7 @@ export function ThemeSelect({ className, sidebar = false }: { className?: string
         onChange={(value) => updateSettings({ theme: value })}
         options={themeOptions}
         className={sidebar ? "@max-[12rem]/navigation:[&>svg]:hidden" : undefined}
-        triggerClassName={sidebar ? "h-11 @max-[12rem]/navigation:p-0 @max-[12rem]/navigation:text-transparent @max-[12rem]/navigation:overflow-hidden @max-[12rem]/navigation:whitespace-nowrap" : undefined}
+        triggerClassName={sidebar ? "h-11 transition-[background-color,border-color,box-shadow] @max-[12rem]/navigation:p-0 @max-[12rem]/navigation:text-transparent @max-[12rem]/navigation:overflow-hidden @max-[12rem]/navigation:whitespace-nowrap" : undefined}
         menuClassName="min-w-44"
       />
       {sidebar && <MdPalette className="pointer-events-none absolute left-3 top-3 text-xl text-text-secondary @min-[12rem]/navigation:hidden" />}

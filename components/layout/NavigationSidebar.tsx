@@ -10,6 +10,7 @@ import { IconButton } from "@/components/ui/IconButton";
 import { ThemeSelect } from "@/components/settings/ThemeSelect";
 import { cn } from "@/utils/uiHelpers";
 import { useWorkspaceSidebar } from "./WorkspaceSidebarContext";
+import { WORKSPACE_MEDIA } from "@/config/responsive";
 
 const navItems = [
   { href: "/", label: "Home", icon: MdHome },
@@ -31,7 +32,7 @@ export function NavigationSidebar() {
     if (!dialog || !mobileOpen) return;
     const trigger = document.activeElement as HTMLElement | null;
     dialog.showModal();
-    const query = window.matchMedia("(min-width: 768px)");
+    const query = window.matchMedia(WORKSPACE_MEDIA.desktopNavigation);
     const closeOnDesktop = () => { if (query.matches) setMobileOpen(false); };
     const closeOnHistoryNavigation = () => setMobileOpen(false);
     query.addEventListener("change", closeOnDesktop);
@@ -59,7 +60,7 @@ export function NavigationSidebar() {
 
   const footer = (mobile: boolean) => (
     <div className="mt-auto shrink-0 space-y-2 border-t border-border-default p-2" data-tool-controls>
-      <a href="https://github.com/comparecode-web/comparecode-web" target="_blank" rel="noopener noreferrer" title="GitHub" className="flex h-11 items-center gap-3 overflow-hidden rounded-lg px-3 text-sm font-semibold text-text-secondary hover:bg-hover-overlay hover:text-accent-primary">
+      <a href="https://github.com/comparecode-web/comparecode-web" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="flex h-11 items-center gap-3 overflow-hidden rounded-lg px-3 text-sm font-semibold text-text-secondary hover:bg-hover-overlay hover:text-accent-primary">
         <FaGithub className="shrink-0 text-xl" />
         <span className={mobile ? "" : "hidden @min-[12rem]/navigation:inline"}>GitHub</span>
       </a>
@@ -70,7 +71,7 @@ export function NavigationSidebar() {
   const navigation = (mobile: boolean) => (
     <nav aria-label={mobile ? "Mobile navigation" : "Main navigation"} className="flex flex-col gap-1.5 p-2" data-tool-controls>
       {navItems.map(({ href, label, icon: Icon }) => (
-        <button key={href} type="button" aria-label={label} aria-current={pathname === href ? "page" : undefined} data-tooltip={mobile ? undefined : label} onClick={() => navigate(href)} className={cn("flex min-h-11 items-center gap-3 rounded-xl border px-3 text-left text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-accent-primary", pathname === href ? "border-accent-primary/20 bg-bg-selected text-accent-primary" : "border-transparent text-text-secondary hover:bg-hover-overlay hover:text-text-primary")}>
+        <button key={href} type="button" aria-label={label} aria-current={pathname === href ? "page" : undefined} onClick={() => navigate(href)} className={cn("flex min-h-11 items-center gap-3 rounded-xl border px-3 text-left text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-accent-primary", pathname === href ? "border-accent-primary/20 bg-bg-selected text-accent-primary" : "border-transparent text-text-secondary hover:bg-hover-overlay hover:text-text-primary")}>
           <Icon className="shrink-0 text-xl" />
           <span className={cn("whitespace-nowrap", !mobile && "hidden @min-[12rem]/navigation:inline")}>{label}</span>
         </button>
@@ -83,7 +84,7 @@ export function NavigationSidebar() {
       <aside className={cn("@container/navigation hidden shrink-0 flex-col overflow-hidden border-r border-border-default bg-bg-primary transition-[width] duration-200 ease-in-out motion-reduce:transition-none md:flex", desktopExpanded === null ? "w-16 xl:w-60" : desktopExpanded ? "w-60" : "w-16")}>
         <div className="flex h-16 shrink-0 items-center justify-between gap-1 px-2">
           {brand(false)}
-          <IconButton aria-label="Toggle navigation labels" onClick={() => setDesktopExpanded(!(desktopExpanded ?? window.matchMedia("(min-width: 1280px)").matches))} className="ml-auto h-11 w-11 shrink-0 @min-[12rem]/navigation:w-8" data-tooltip="Toggle navigation labels">
+          <IconButton aria-label="Toggle navigation labels" onClick={() => setDesktopExpanded(!(desktopExpanded ?? window.matchMedia(WORKSPACE_MEDIA.expandedNavigation).matches))} className="ml-auto h-11 w-11 shrink-0 @min-[12rem]/navigation:w-8">
             {desktopExpanded === null ? <><MdChevronRight className="text-xl xl:hidden" /><MdChevronLeft className="hidden text-xl xl:block" /></> : desktopExpanded ? <MdChevronLeft className="text-xl" /> : <MdChevronRight className="text-xl" />}
           </IconButton>
         </div>

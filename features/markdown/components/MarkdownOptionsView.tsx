@@ -104,6 +104,6 @@ export function MarkdownLayoutControl() {
     value={viewMode}
     onChange={setViewMode}
     className="w-auto"
-    buttonClassName="px-2"
+    buttonClassName="px-3"
   />;
 }

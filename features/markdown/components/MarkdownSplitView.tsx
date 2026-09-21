@@ -8,6 +8,7 @@ import { useMarkdownScrollSync } from "@/features/markdown/hooks/useMarkdownScro
 import { useResizableMarkdownSplit } from "@/features/markdown/hooks/useResizableMarkdownSplit";
 import { useMarkdownUIStore } from "@/features/markdown/store/useMarkdownUIStore";
 import { cn } from "@/utils/uiHelpers";
+import { WORKSPACE_MEDIA } from "@/config/responsive";
 
 interface MarkdownSplitViewProps {
   value: string;
@@ -21,7 +22,7 @@ interface MarkdownSplitViewProps {
 
 function MarkdownPaneHeader({ title, showStats, value }: { title: string; showStats?: boolean; value: string }) {
   return (
-    <div className="flex h-9 shrink-0 items-center gap-2 border-b border-border-default bg-bg-secondary px-3 text-xs font-bold uppercase tracking-wider text-text-secondary">
+    <div className="flex h-9 shrink-0 items-center gap-2 border-b border-border-default bg-bg-secondary px-3 text-xs font-bold text-text-secondary">
       <span className="min-w-0 truncate">{title}</span>
       {showStats && (
         <span className="min-w-0 shrink-0 sm:ml-auto">
@@ -45,7 +46,7 @@ function useMobileMarkdownLayout() {
       return;
     }
 
-    const mediaQuery = window.matchMedia("(max-width: 639px)");
+    const mediaQuery = window.matchMedia(WORKSPACE_MEDIA.belowSmall);
     const updateMobileLayout = () => {
       setIsMobileLayout(mediaQuery.matches);
     };

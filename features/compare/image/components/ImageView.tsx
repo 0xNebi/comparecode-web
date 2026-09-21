@@ -117,7 +117,7 @@ export function ImageView() {
   }, [alignment.appliedTransform, bothLoaded, modifiedImage, originalImage]);
 
   return (
-    <div className="@container/image flex h-full min-w-0 w-full flex-col gap-3 overflow-hidden bg-bg-secondary p-2 sm:p-4">
+    <div className="@container/image flex h-full min-w-0 w-full flex-col gap-3 overflow-hidden bg-bg-secondary p-2">
       {!bothLoaded ? (
         <div className="flex-1 min-h-0 overflow-auto custom-scrollbar">
           <ImageUploadPanel />
@@ -137,7 +137,7 @@ export function ImageView() {
               <button
                 onClick={toggleMetadataPanel}
                 className="inline-flex items-center gap-2 rounded-md bg-accent-primary px-3 py-1.5 text-sm font-semibold text-white shadow-sm transition-colors duration-(--duration-short) hover:bg-accent-hover"
-                title={isMetadataPanelOpen ? "Hide Metadata" : "Show Metadata"}
+                title={isMetadataPanelOpen ? "Hide metadata" : "Show metadata"}
               >
                 <MdInfo className="text-base shrink-0" />
                 <span>Metadata</span>

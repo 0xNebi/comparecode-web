@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, type ComponentType, type ReactNode } from "re
 import { MdClose, MdExpandLess, MdExpandMore } from "react-icons/md";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/utils/uiHelpers";
+import { WORKSPACE_MEDIA } from "@/config/responsive";
 
 export interface ToolWorkspaceTab<T extends string> {
   value: T;
@@ -59,6 +60,8 @@ export function ToolWorkspaceShell<T extends string>({
   const historyPanelId = useId();
   const historyTab = tabs.find((tab) => tab.placement === "right");
   const isHistoryOpen = isPanelOpen && activeTab?.placement === "right";
+  const isOptionsOpen = isPanelOpen && !isHistoryOpen;
+  const optionsTab = tabs.find((tab) => tab.placement !== "right");
 
   useEffect(() => {
     if (!isHistoryOpen) return;
@@ -72,7 +75,7 @@ export function ToolWorkspaceShell<T extends string>({
   }, [isHistoryOpen, onPanelOpenChange]);
 
   useEffect(() => {
-    const query = window.matchMedia?.("(max-width: 639px)");
+    const query = window.matchMedia?.(WORKSPACE_MEDIA.belowSmall);
     if (!query) return;
     const closeOnMobile = () => {
       if (query.matches) onPanelOpenChange(false);
@@ -84,7 +87,7 @@ export function ToolWorkspaceShell<T extends string>({
 
   return (
     <div className="relative flex h-full min-h-0 min-w-0 w-full overflow-hidden bg-bg-secondary">
-    <div className="@container/workspace flex min-h-0 min-w-0 flex-1 flex-col gap-3 p-2 sm:p-4">
+    <div className="@container/workspace flex min-h-0 min-w-0 flex-1 flex-col gap-3 p-2">
       <div
         ref={controlsRef}
         data-tool-controls
@@ -98,7 +101,7 @@ export function ToolWorkspaceShell<T extends string>({
           }
         }}
       >
-        <div className="flex min-h-11 shrink-0 flex-wrap items-center gap-1.5 px-2 py-1">
+        <div className="flex min-h-12 shrink-0 flex-wrap items-center gap-1.5 px-2 py-1">
           {compactControls}
           <div className={cn("mr-auto hidden items-center gap-2 text-sm font-semibold text-text-secondary", !compactControls && "@lg/workspace:flex")}>
             {ToolIcon && <ToolIcon className="text-lg" />}
@@ -165,9 +168,14 @@ export function ToolWorkspaceShell<T extends string>({
           )}
           </div>
         </div>
-        <div className="min-h-0 overflow-y-auto custom-scrollbar">
-          <div id={panelId} hidden={!isPanelOpen || isHistoryOpen} className="border-t border-border-default">
-            {isPanelOpen && !isHistoryOpen && activeTab?.content}
+        <div
+          id={panelId}
+          aria-hidden={!isOptionsOpen}
+          inert={!isOptionsOpen}
+          className={cn("grid min-h-0 transition-[grid-template-rows,opacity] duration-200 ease-in-out motion-reduce:transition-none", isOptionsOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0")}
+        >
+          <div data-open={isOptionsOpen} className="cc-options-scroll min-h-0 custom-scrollbar">
+            <div className="border-t border-border-default">{optionsTab?.content}</div>
           </div>
         </div>
       </div>

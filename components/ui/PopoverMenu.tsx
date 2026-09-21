@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ButtonHTMLAttributes, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, type RefObject, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/utils/uiHelpers";
+import { remToCssPixels } from "@/utils/domSizing";
 
 interface PopoverMenuProps {
   isOpen: boolean;
@@ -27,7 +28,7 @@ export function PopoverMenu({
 }: PopoverMenuProps) {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
-  const [position, setPosition] = useState<CSSProperties>({ position: "fixed", visibility: "hidden", width: "max-content", maxWidth: "calc(100vw - 16px)" });
+  const [position, setPosition] = useState<CSSProperties>({ position: "fixed", visibility: "hidden", width: "max-content", maxWidth: "calc(100vw - 1rem)" });
 
   useLayoutEffect(() => {
     if (!isOpen) return;
@@ -37,12 +38,15 @@ export function PopoverMenu({
       if (!trigger || !menu) return;
       setPortalTarget(trigger.closest("dialog") ?? document.body);
       const rect = trigger.getBoundingClientRect();
-      const width = Math.min(role === "listbox" ? rect.width : Math.max(rect.width, menu.scrollWidth), window.innerWidth - 16);
-      const below = window.innerHeight - rect.bottom - 12;
-      const above = rect.top - 12;
-      const placeAbove = below < Math.min(menu.scrollHeight, 224) && above > below;
-      const left = Math.max(8, Math.min(align === "end" ? rect.right - width : rect.left, window.innerWidth - width - 8));
-      const next: CSSProperties = { position: "fixed", visibility: "visible", width, left, top: placeAbove ? undefined : rect.bottom + 4, bottom: placeAbove ? window.innerHeight - rect.top + 4 : undefined, maxHeight: Math.max(40, placeAbove ? above : below) };
+      const edge = remToCssPixels(0.5);
+      const gap = remToCssPixels(0.25);
+      const dropdownMaxHeight = remToCssPixels(14);
+      const width = Math.min(role === "listbox" ? rect.width : Math.max(rect.width, menu.scrollWidth), Math.max(0, window.innerWidth - 2 * edge));
+      const below = window.innerHeight - rect.bottom - edge - gap;
+      const above = rect.top - edge - gap;
+      const placeAbove = below < Math.min(menu.scrollHeight, dropdownMaxHeight) && above > below;
+      const left = Math.max(edge, Math.min(align === "end" ? rect.right - width : rect.left, window.innerWidth - width - edge));
+      const next: CSSProperties = { position: "fixed", visibility: "visible", width, left, top: placeAbove ? undefined : rect.bottom + gap, bottom: placeAbove ? window.innerHeight - rect.top + gap : undefined, maxHeight: Math.min(role === "listbox" ? dropdownMaxHeight : Infinity, Math.max(0, placeAbove ? above : below)) };
       setPosition((previous) => JSON.stringify(previous) === JSON.stringify(next) ? previous : next);
     };
     updatePosition();
@@ -81,8 +85,13 @@ export function PopoverMenu({
 
     document.addEventListener("pointerdown", handlePointerDown);
     document.addEventListener("keydown", handleEscape, true);
+    const observer = new MutationObserver(() => {
+      if (triggerRef.current?.closest("[inert]")) onOpenChange(false);
+    });
+    observer.observe(document.body, { subtree: true, attributes: true, attributeFilter: ["inert"] });
 
     return () => {
+      observer.disconnect();
       document.removeEventListener("pointerdown", handlePointerDown);
       document.removeEventListener("keydown", handleEscape, true);
     };

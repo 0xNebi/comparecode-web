@@ -51,7 +51,7 @@ describe("ToolWorkspaceShell", () => {
     const user = userEvent.setup();
     render(<ShellHarness initiallyOpen={false} />);
     const editor = screen.getByRole("textbox");
-    expect(screen.queryByText("Options content")).not.toBeInTheDocument();
+    expect(screen.getByText("Options content").closest("[aria-hidden]")).toHaveAttribute("aria-hidden", "true");
     const toggle = screen.getByRole("button", { name: "Options" });
     await user.click(toggle);
     expect(screen.getByText("Options content")).toBeVisible();
@@ -71,7 +71,7 @@ describe("ToolWorkspaceShell", () => {
 
     expect(screen.getAllByText("History content")[0]).toBeInTheDocument();
     expect(screen.getByRole("complementary", { name: "History" })).toBeVisible();
-    expect(screen.queryByText("Options content")).not.toBeInTheDocument();
+    expect(screen.getByText("Options content").closest("[aria-hidden]")).toHaveAttribute("aria-hidden", "true");
     expect(screen.getByText("Main content")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Close history" }));
     expect(screen.queryByRole("complementary", { name: "History" })).not.toBeInTheDocument();
@@ -90,7 +90,7 @@ describe("ToolWorkspaceShell", () => {
     const editor = screen.getByRole("textbox", { name: "Editor content" });
     await user.type(editor, " edited");
     await user.click(screen.getByRole("button", { name: "Options" }));
-    expect(screen.queryByText("Options content")).not.toBeInTheDocument();
+    expect(screen.getByText("Options content").closest("[aria-hidden]")).toHaveAttribute("aria-hidden", "true");
     await user.click(screen.getByRole("button", { name: "Layout: Split - switch to Unified" }));
 
     expect(screen.getByText("Quick action count: 1")).toBeInTheDocument();
