@@ -58,7 +58,10 @@ If Chrome is installed elsewhere, resolve its executable without changing the is
 
 ## Validate and Clean Up
 
-- Exercise the changed behavior, important failure paths, keyboard and focus behavior, and relevant responsive layouts. Capture only evidence needed for the task.
+- For a full application smoke audit, cover `/`, `/text`, `/image`, `/markdown`, `/history`, and `/settings`. For focused work, test the affected route plus shared-shell consumers that can regress.
+- Exercise the changed behavior, important failure paths, keyboard and focus behavior, and relevant responsive layouts. Check browser console errors and warnings, material request failures, and page-level horizontal overflow when applicable.
+- Capture only evidence needed for the task. Treat `.playwright-mcp` as disposable tool output; do not reference its files from product code or documentation.
 - Close or stop only browser and server processes owned by the task. Never terminate every Chrome, Edge, Node, or browser process.
 - Delete a temporary browser profile only after its owned browser process has exited. Do not delete persistent automation profiles.
-- Report the URL tested, whether MCP isolated mode or a dedicated profile was used, and any relevant validation gaps.
+- Remove task-created screenshots, snapshots, traces, and temporary profiles when they are no longer needed. Do not delete pre-existing artifacts unless the user explicitly includes cleanup in scope.
+- Report the URL and routes tested, representative viewport sizes, whether MCP isolated mode or a dedicated profile was used, console or request failures, and any relevant validation gaps.

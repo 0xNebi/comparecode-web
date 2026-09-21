@@ -5,11 +5,12 @@
 - CompareCode is a free and open-source, local-first browser application for comparing text, code, images, and Markdown.
 - The stack is Next.js, React, TypeScript, Tailwind CSS, Zustand, Vitest, Testing Library, Dexie, and IndexedDB.
 - `package.json` is the source of truth for available commands and dependency versions.
-- The root `AGENTS.md` is the only repository-wide agent instruction file. Keep repeatable task-specific workflows in `.agents/skills`; do not create nested, local, personal, or tool-specific instruction files.
+- The root `AGENTS.md` is the only repository-wide agent instruction file. Keep repeatable workflows in `.agents/skills`, detailed architecture in `docs/architecture`, and the only project `README.md` at the repository root.
 
 ## Working Agreements
 
-- Keep changes focused on the active task. Preserve unrelated user changes and do not include them in edits, staging, commits, cleanup, or validation fixes.
+- Complete the user's requested task across all affected areas. Preserve unrelated user changes and do not include them in edits, staging, commits, cleanup, or validation fixes.
+- During implementation, follow the user's requested scope without imposing branch or PR size limits from contributor guidance. Evaluate contributor PR scope expectations only during a requested review using the code-review skill.
 - Prefer maintainable, long-term solutions that follow existing patterns. Avoid quick fixes, speculative abstractions, and unrelated refactors.
 - Before editing, inspect the target code, its tests, its callers, and directly affected integration points in proportion to the change.
 - Treat tests as behavior contracts. Fix production regressions instead of weakening, deleting, or bypassing tests; update expectations only for an explicitly accepted behavior change.
@@ -26,12 +27,18 @@
 
 ## Architecture and Implementation
 
+- Use sentence case for user-facing labels, headings, buttons, and tooltips (for example, "Word wrap" and "Input editor"). Preserve proper names and standard acronyms. Do not force UI text to uppercase through CSS. Keep keyboard shortcuts out of visible control labels; show them in tooltips when useful.
+- Section reset controls are always icon-only, including Settings. Preserve their reset scope, accessible name, and explanatory tooltip; do not add a visible "Reset section" label. The shared owner is `components/settings/OptionsSection.tsx`.
+- Left navigation sidebar controls must not display tooltips, including in the collapsed state. Preserve their accessible names.
+- Follow `docs/architecture/ui-sizing.md` for unit choices: prefer existing rem-based Tailwind tokens for scalable UI sizing, flexible units for available space, and CSS pixels for measured geometry, hairline borders, and explicit pixel-based content settings. Keep CSS and JavaScript breakpoints aligned; do not mechanically convert every pixel value or change persisted units.
+
 - Keep module boundaries strict:
   - Text comparison logic and UI belong under `features/compare/text`.
   - Image comparison logic and UI belong under `features/compare/image`.
   - Compare-only shared contracts belong under `features/compare/shared` only when both compare modules genuinely use them.
   - Markdown editor, preview, formatting, import, paste, and history behavior belong under `features/markdown`.
   - Application-wide primitives, stores, services, hooks, utilities, configuration, and types belong in their established root-level owners only when they are genuinely cross-feature.
+- Treat `docs/architecture/text-compare.md`, `docs/architecture/image-compare.md`, and `docs/architecture/markdown.md` as the detailed feature contracts. Update the relevant document when ownership, data flow, invariants, or required validation changes.
 - Do not make Text depend on Image internals, Image depend on Text internals, or unrelated features depend on Markdown internals.
 - Extend the existing canonical owner instead of duplicating business rules, defaults, persistence keys, mappings, UI policy, or state across components, stores, and services.
 - Reuse existing UI primitives and semantic components before introducing a new component or one-off variant. A new parallel implementation requires a concrete unmet requirement.
@@ -51,6 +58,9 @@
 ## Skill Routing
 
 - Use `$comparecode-browser-testing` for Playwright MCP, browser automation, responsive checks, or a visible local browser preview. Keep agent-owned sessions isolated from personal browser profiles and do not impose a fixed launch size.
+- Use `$comparecode-text-compare` for text input, diff calculation or rendering, merge behavior, block navigation, text settings, or text-history restoration.
+- Use `$comparecode-image-compare` for image upload, comparison modes, canvas rendering, diff algorithms, alignment, metadata, or image-history restoration.
+- Use `$comparecode-markdown` for Markdown editing, preview rendering, formatting, paste, import, scroll sync, session history, or Markdown persistence.
 - Use `$comparecode-git-workflow` for branch, staging, commit, push, fork, pull-request title, or pull-request description work.
 - Use `$comparecode-code-review` for code reviews, pull-request reviews, diff audits, or pre-merge assessments.
 - Use `$comparecode-clarify-open-questions` when material requirements remain unresolved or the user explicitly asks for questions, options, or a recommendation before implementation.
@@ -68,14 +78,11 @@
 
 ## Git and Change Authority
 
-- Creating or switching branches, committing, pushing, and opening pull requests require the user's explicit request. An explicit pull-request request also authorizes only the minimum branch publication needed to open that pull request.
+- Creating or switching branches, committing, pushing, opening pull requests, and merging require explicit user authorization for that action.
 - In the user's terminology, `dev`, `develop`, and `developer` refer to the repository's actual `development` branch.
-- Never commit directly to, merge locally into, or push changes directly to `development` or `main`. Changes reach either protected branch only through a pull request from a focused topic branch.
-- Create every `feature/*` branch directly from the latest fetched canonical `development` branch, never from `main` or another topic branch.
-- Use an English `feature/<descriptive-name>` or `fix/<descriptive-name>` topic branch. Keep one branch and one pull request focused on one feature or fix.
+- Never commit directly to, merge locally into, or push directly to `development` or `main`. Create English `feature/*` or `fix/*` branches from the latest fetched canonical `development` branch.
 - Default every pull request to `development`. Do not open a pull request to `main` unless the user explicitly authorizes that exact target in the current task.
-- Never merge, close, or otherwise finalize a pull request unless the user explicitly requests that separate action. Authorization to create or update a pull request does not authorize merging it.
-- Create commits only through `$comparecode-git-workflow`. Every commit requires a DCO sign-off and an English, subject-only Conventional Commit message; the mandatory `Signed-off-by` trailer is the only permitted footer.
+- Create commits only through `$comparecode-git-workflow`. Every commit requires a DCO sign-off and an English subject-only Conventional Commit message.
 - Treat commits created by the user as legitimate repository history. Refresh status and history, build on them normally, and never amend, squash, rebase, reset, or otherwise rewrite them without an explicit request.
 - Do not change Git identity, signing configuration, remotes, branch protection, or repository settings on the user's behalf unless explicitly requested.
 
@@ -84,6 +91,5 @@
 - Treat correctness, user-visible regressions, data loss, security issues, and violations of explicit product behavior as merge blockers.
 - Treat cross-module coupling, duplicated sources of truth, bypassed canonical stores/services, and unjustified duplicate components as blocking when they create conflicting behavior or maintenance risk.
 - Treat prohibited runtime dependency licenses, missing required notices, secrets, unsafe content rendering, and material dependency risks as blocking.
-- Require meaningful tests for non-trivial logic changes or a concrete manual validation plan when automation is not practical.
-- For UI changes, verify visible behavior and relevant responsive or interaction paths; use `$comparecode-browser-testing` when browser validation is warranted.
-- Keep review findings specific and actionable. Prioritize must-fix issues over optional improvements, and leave formatting-only concerns to deterministic tooling when possible.
+- Require meaningful tests for non-trivial logic changes or a concrete manual validation plan when automation is not practical. Verify visible and responsive behavior for material UI changes.
+- Keep findings specific and actionable, prioritize must-fix issues, and leave formatting-only concerns to deterministic tooling.

@@ -5,18 +5,33 @@ description: Handle CompareCode branch, staging, commit, push, fork, and pull-re
 
 # CompareCode Git Workflow
 
-Prepare focused, reviewable Git history without exceeding the user's authorization.
+Deliver the user's requested Git work without exceeding their authorization.
 
 ## Authorization and Protected Branches
 
 1. Inspect `git status`, the complete relevant diff, the current branch, recent history, and configured remotes before acting.
 2. Create or switch a branch, commit, push, or open a pull request only when the user explicitly requests that action. A request to open a pull request authorizes the minimum topic-branch push required to create it, but never authorizes a merge.
 3. Resolve `dev`, `develop`, and `developer` to the actual `development` branch.
-4. Before creating a `feature/*` branch, fetch the canonical repository and verify the local `development` ref matches its latest fetched upstream state. Branch directly from that `development` commit, never from `main` or another topic branch.
-5. Never commit directly to, merge locally into, or push changes directly to `development` or `main`. Use a focused `feature/<descriptive-name>` or `fix/<descriptive-name>` branch.
+4. Before creating a `feature/*` branch, fetch the canonical repository and verify the local `development` ref matches its latest fetched upstream state. Branch directly from that `development` commit, never from `main` or another topic branch, and do not inherit `development` as the topic branch's upstream.
+5. Never commit directly to, merge locally into, or push changes directly to `development` or `main`. Use a `feature/<descriptive-name>` or `fix/<descriptive-name>` branch.
 6. Keep the complete branch name at 60 characters or fewer. Prefer three to six short descriptive words after the prefix, separated by hyphens.
-7. Keep one branch and one pull request scoped to one feature or fix. Exclude unrelated user changes from staging and commits.
+7. Follow the user's requested scope and branch organization across affected features. Exclude unrelated user changes from staging and commits.
 8. Preserve user-created commits. Do not amend, squash, rebase, reset, force-push, or rewrite them unless the user explicitly requests that exact history operation.
+
+## Topic Branch Creation
+
+1. Fetch the canonical `development` ref and identify the canonical remote from its URL and repository ownership rather than assuming a remote name.
+2. Verify the worktree state is safe for switching. Bring the local `development` branch to the fetched canonical commit only by fast-forward; if local history has diverged, stop and report it instead of resetting or rewriting history.
+3. Create the topic branch from the verified local `development` ref without upstream tracking:
+
+```powershell
+git switch --no-track -c feature/descriptive-name development
+```
+
+Use the corresponding `fix/descriptive-name` prefix for a fix. Never create the topic branch with a command that makes `origin/development` or another base branch its upstream.
+
+4. Immediately verify the new branch with `git status --short --branch`, `git branch -vv`, and the merge base against `development`. Before the first push, the topic branch must have no upstream and its merge base must equal the verified `development` commit.
+5. When the user later authorizes the first push, publish the topic branch to the correct remote and set its upstream to the same-named remote topic branch. Never set a topic branch to track `development`.
 
 ## Fork and Remote Handling
 
@@ -69,8 +84,8 @@ One or two sentences describing the purpose and essential result.
 
 ## What changed
 
-- Only the material changes reviewers need to understand.
-- Keep a small pull request to a few bullets; summarize larger work without cataloguing every file.
+- Describe the material changes and their effects.
+- Match the detail to the actual work without cataloguing every file.
 
 ## Outcome
 
