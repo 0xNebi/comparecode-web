@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  canvasToBlob,
   formatSnapshotFilename,
   ImageSnapshotService,
   SnapshotRenderOptions
@@ -271,6 +272,128 @@ describe("ImageSnapshotService", () => {
       const filename = await ImageSnapshotService.downloadSnapshot(options);
       expect(filename).toMatch(/^comparecode-photo-before-vs-photo-after-fade-50pct-/);
       expect(clickSpy).toHaveBeenCalled();
+    });
+
+    it("falls back to data URL and completes download when toBlob yields null rather than hanging", async () => {
+      vi.spyOn(ImageDiffService, "renderFade").mockImplementation(async (_orig, _mod, targetCanvas) => {
+        targetCanvas.width = 10;
+        targetCanvas.height = 10;
+      });
+
+      vi.spyOn(HTMLCanvasElement.prototype, "toBlob").mockImplementation(function (
+        this: HTMLCanvasElement,
+        callback: BlobCallback
+      ) {
+        callback(null);
+      });
+
+      const toDataUrlSpy = vi.spyOn(HTMLCanvasElement.prototype, "toDataURL").mockReturnValue(
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+      );
+
+      const clickSpy = vi.fn();
+      const originalCreateElement = document.createElement.bind(document);
+      vi.spyOn(document, "createElement").mockImplementation((tagName: string) => {
+        const el = originalCreateElement(tagName);
+        if (tagName.toLowerCase() === "a") {
+          el.click = clickSpy;
+        }
+        return el;
+      });
+
+      const options: SnapshotRenderOptions = {
+        compareMode: "fade",
+        originalImage,
+        modifiedImage,
+        fadeValue: 500,
+        sliderPosition: 0.5,
+        diffAlgorithm: "highlight",
+        alignmentTransform: null
+      };
+
+      const filename = await ImageSnapshotService.downloadSnapshot(options);
+      expect(filename).toMatch(/^comparecode-photo-before-vs-photo-after-fade-50pct-/);
+      expect(toDataUrlSpy).toHaveBeenCalledWith("image/png");
+      expect(clickSpy).toHaveBeenCalled();
+    });
+
+    it("waits for asynchronous toBlob callback without invoking toDataURL prematurely", async () => {
+      vi.spyOn(ImageDiffService, "renderFade").mockImplementation(async (_orig, _mod, targetCanvas) => {
+        targetCanvas.width = 10;
+        targetCanvas.height = 10;
+      });
+
+      vi.spyOn(HTMLCanvasElement.prototype, "toBlob").mockImplementation(function (
+        this: HTMLCanvasElement,
+        callback: BlobCallback
+      ) {
+        setTimeout(() => {
+          callback(new Blob(["delayed-png-data"], { type: "image/png" }));
+        }, 150);
+      });
+
+      const toDataUrlSpy = vi.spyOn(HTMLCanvasElement.prototype, "toDataURL");
+
+      const clickSpy = vi.fn();
+      const originalCreateElement = document.createElement.bind(document);
+      vi.spyOn(document, "createElement").mockImplementation((tagName: string) => {
+        const el = originalCreateElement(tagName);
+        if (tagName.toLowerCase() === "a") {
+          el.click = clickSpy;
+        }
+        return el;
+      });
+
+      const options: SnapshotRenderOptions = {
+        compareMode: "fade",
+        originalImage,
+        modifiedImage,
+        fadeValue: 500,
+        sliderPosition: 0.5,
+        diffAlgorithm: "highlight",
+        alignmentTransform: null
+      };
+
+      const filename = await ImageSnapshotService.downloadSnapshot(options);
+      expect(filename).toMatch(/^comparecode-photo-before-vs-photo-after-fade-50pct-/);
+      expect(toDataUrlSpy).not.toHaveBeenCalled();
+      expect(clickSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe("canvasToBlob", () => {
+    it("converts canvas via fallback when toBlob produces null", async () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = 10;
+      canvas.height = 10;
+
+      vi.spyOn(canvas, "toBlob").mockImplementation((callback: BlobCallback) => {
+        callback(null);
+      });
+      vi.spyOn(canvas, "toDataURL").mockReturnValue(
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+      );
+
+      const blob = await canvasToBlob(canvas);
+      expect(blob).toBeInstanceOf(Blob);
+      expect(blob.type).toBe("image/png");
+    });
+
+    it("does not call toDataURL when toBlob succeeds with delayed callback", async () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = 10;
+      canvas.height = 10;
+
+      vi.spyOn(canvas, "toBlob").mockImplementation((callback: BlobCallback) => {
+        setTimeout(() => {
+          callback(new Blob(["async-blob"], { type: "image/png" }));
+        }, 150);
+      });
+      const toDataUrlSpy = vi.spyOn(canvas, "toDataURL");
+
+      const blob = await canvasToBlob(canvas);
+      expect(blob).toBeInstanceOf(Blob);
+      expect(toDataUrlSpy).not.toHaveBeenCalled();
     });
   });
 });

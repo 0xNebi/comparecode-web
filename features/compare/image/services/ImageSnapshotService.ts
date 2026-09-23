@@ -54,13 +54,18 @@ export function formatSnapshotFilename(options: SnapshotRenderOptions, timestamp
   return `comparecode-${basePair}-${modeSuffix}-${timestamp}.png`;
 }
 
-function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
+export function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
   return new Promise((resolve, reject) => {
-    let resolved = false;
+    let settled = false;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
     const fallbackToDataUrl = () => {
-      if (resolved) return;
-      resolved = true;
+      if (settled) return;
+      settled = true;
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
       try {
         const dataUrl = canvas.toDataURL("image/png");
         const parts = dataUrl.split(",");
@@ -79,28 +84,31 @@ function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
     };
 
     if (typeof canvas.toBlob === "function") {
+      timeoutId = setTimeout(() => {
+        if (!settled) {
+          fallbackToDataUrl();
+        }
+      }, 3000);
+
       try {
         canvas.toBlob((blob) => {
-          if (!resolved) {
-            resolved = true;
-            if (blob) {
-              resolve(blob);
-            } else {
-              fallbackToDataUrl();
+          if (settled) return;
+          if (blob) {
+            settled = true;
+            if (timeoutId !== null) {
+              clearTimeout(timeoutId);
+              timeoutId = null;
             }
+            resolve(blob);
+          } else {
+            fallbackToDataUrl();
           }
         }, "image/png");
+        return;
       } catch {
         fallbackToDataUrl();
         return;
       }
-
-      setTimeout(() => {
-        if (!resolved) {
-          fallbackToDataUrl();
-        }
-      }, 50);
-      return;
     }
 
     fallbackToDataUrl();
