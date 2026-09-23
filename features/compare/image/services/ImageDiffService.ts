@@ -1,6 +1,6 @@
 import { DiffAlgorithm } from "../store/useImageCompareStore";
 import { ImageAffineTransform } from "./alignment/types";
-import { buildAffineMatrix, getTransformedBounds } from "./alignment/transformUtils";
+import { buildAffineMatrix, getTransformedBounds, hasSameAspectRatio } from "./alignment/transformUtils";
 
 export interface DiffStats {
   totalPixels: number;
@@ -94,7 +94,7 @@ function drawCheckerboard(ctx: CanvasRenderingContext2D, width: number, height: 
   }
 }
 
-function createAlignedPair(
+export function createAlignedPair(
   original: { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D },
   modified: { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D },
   transform: ImageAffineTransform | null | undefined
@@ -107,27 +107,53 @@ function createAlignedPair(
   if (!transform) {
     const width = Math.max(original.canvas.width, modified.canvas.width);
     const height = Math.max(original.canvas.height, modified.canvas.height);
-    const totalPixels = width * height;
-    const originalData = original.ctx.getImageData(0, 0, original.canvas.width, original.canvas.height).data;
-    const modifiedData = modified.ctx.getImageData(0, 0, modified.canvas.width, modified.canvas.height).data;
-    const o = new Uint8ClampedArray(totalPixels * 4);
-    const m = new Uint8ClampedArray(totalPixels * 4);
 
-    for (let y = 0; y < original.canvas.height; y++) {
-      const srcStart = y * original.canvas.width * 4;
-      const srcEnd = srcStart + original.canvas.width * 4;
-      const dstStart = y * width * 4;
-      o.set(originalData.subarray(srcStart, srcEnd), dstStart);
+    if (
+      original.canvas.width === width &&
+      original.canvas.height === height &&
+      modified.canvas.width === width &&
+      modified.canvas.height === height
+    ) {
+      return {
+        width,
+        height,
+        originalData: original.ctx.getImageData(0, 0, width, height).data,
+        modifiedData: modified.ctx.getImageData(0, 0, width, height).data
+      };
     }
 
-    for (let y = 0; y < modified.canvas.height; y++) {
-      const srcStart = y * modified.canvas.width * 4;
-      const srcEnd = srcStart + modified.canvas.width * 4;
-      const dstStart = y * width * 4;
-      m.set(modifiedData.subarray(srcStart, srcEnd), dstStart);
+    const originalCanvas = document.createElement("canvas");
+    const modifiedCanvas = document.createElement("canvas");
+    originalCanvas.width = width;
+    originalCanvas.height = height;
+    modifiedCanvas.width = width;
+    modifiedCanvas.height = height;
+
+    const originalCtx = originalCanvas.getContext("2d");
+    const modifiedCtx = modifiedCanvas.getContext("2d");
+    if (!originalCtx || !modifiedCtx) {
+      throw new Error("Could not create aligned canvas context");
     }
 
-    return { width, height, originalData: o, modifiedData: m };
+    if (hasSameAspectRatio(original.canvas.width, original.canvas.height, modified.canvas.width, modified.canvas.height)) {
+      originalCtx.imageSmoothingEnabled = true;
+      originalCtx.imageSmoothingQuality = "high";
+      originalCtx.drawImage(original.canvas, 0, 0, width, height);
+
+      modifiedCtx.imageSmoothingEnabled = true;
+      modifiedCtx.imageSmoothingQuality = "high";
+      modifiedCtx.drawImage(modified.canvas, 0, 0, width, height);
+    } else {
+      originalCtx.drawImage(original.canvas, 0, 0);
+      modifiedCtx.drawImage(modified.canvas, 0, 0);
+    }
+
+    return {
+      width,
+      height,
+      originalData: originalCtx.getImageData(0, 0, width, height).data,
+      modifiedData: modifiedCtx.getImageData(0, 0, width, height).data
+    };
   }
 
   const modifiedBounds = getTransformedBounds(transform, modified.canvas.width, modified.canvas.height);
