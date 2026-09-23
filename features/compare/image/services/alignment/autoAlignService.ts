@@ -604,15 +604,15 @@ function getPreferredDimensionScale(original: ImageFileMeta, modified: ImageFile
   return Number.isFinite(preferredScale) && preferredScale > 0 ? preferredScale : null;
 }
 
-function regularizeNearIdentityScale(original: ImageFileMeta, modified: ImageFileMeta, transform: ImageAffineTransform): ImageAffineTransform {
+export function regularizeNearIdentityScale(original: ImageFileMeta, modified: ImageFileMeta, transform: ImageAffineTransform): ImageAffineTransform {
   const originalRatio = original.width / original.height;
   const modifiedRatio = modified.width / modified.height;
   const aspectDelta = Math.abs(originalRatio - modifiedRatio) / Math.max(originalRatio, modifiedRatio);
   if (aspectDelta >= 0.03) return transform;
   const expectedScale = original.width / modified.width;
   const isNearExpectedScale =
-    Math.abs(transform.scaleX - expectedScale) / expectedScale < 0.05 &&
-    Math.abs(transform.scaleY - expectedScale) / expectedScale < 0.05;
+    Math.abs(transform.scaleX - expectedScale) / expectedScale < 0.005 &&
+    Math.abs(transform.scaleY - expectedScale) / expectedScale < 0.005;
 
   const nextTransform = { ...transform };
 

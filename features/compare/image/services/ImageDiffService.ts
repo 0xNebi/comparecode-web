@@ -1,6 +1,6 @@
 import { DiffAlgorithm } from "../store/useImageCompareStore";
 import { ImageAffineTransform } from "./alignment/types";
-import { buildAffineMatrix, getTransformedBounds } from "./alignment/transformUtils";
+import { buildAffineMatrix, getTransformedBounds, hasSameAspectRatio } from "./alignment/transformUtils";
 
 export interface DiffStats {
   totalPixels: number;
@@ -135,13 +135,18 @@ export function createAlignedPair(
       throw new Error("Could not create aligned canvas context");
     }
 
-    originalCtx.imageSmoothingEnabled = true;
-    originalCtx.imageSmoothingQuality = "high";
-    originalCtx.drawImage(original.canvas, 0, 0, width, height);
+    if (hasSameAspectRatio(original.canvas.width, original.canvas.height, modified.canvas.width, modified.canvas.height)) {
+      originalCtx.imageSmoothingEnabled = true;
+      originalCtx.imageSmoothingQuality = "high";
+      originalCtx.drawImage(original.canvas, 0, 0, width, height);
 
-    modifiedCtx.imageSmoothingEnabled = true;
-    modifiedCtx.imageSmoothingQuality = "high";
-    modifiedCtx.drawImage(modified.canvas, 0, 0, width, height);
+      modifiedCtx.imageSmoothingEnabled = true;
+      modifiedCtx.imageSmoothingQuality = "high";
+      modifiedCtx.drawImage(modified.canvas, 0, 0, width, height);
+    } else {
+      originalCtx.drawImage(original.canvas, 0, 0);
+      modifiedCtx.drawImage(modified.canvas, 0, 0);
+    }
 
     return {
       width,

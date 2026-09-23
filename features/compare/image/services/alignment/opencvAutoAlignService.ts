@@ -83,7 +83,7 @@ function runOpenCvWorker(original: WorkImage, modified: WorkImage): Promise<Work
   });
 }
 
-function matToTransform(
+export function matToTransform(
   matrix: number[],
   original: ImageFileMeta,
   modified: ImageFileMeta,
@@ -112,7 +112,7 @@ function matToTransform(
 
   const aspectDelta = Math.abs(original.width / original.height - modified.width / modified.height) / Math.max(original.width / original.height, modified.width / modified.height);
   const dimensionScale = original.width / modified.width;
-  const scale = aspectDelta < 0.03 && Math.abs(estimatedScale - dimensionScale) / dimensionScale < 0.07 ? dimensionScale : estimatedScale;
+  const scale = aspectDelta < 0.03 && Math.abs(estimatedScale - dimensionScale) / dimensionScale < 0.005 ? dimensionScale : estimatedScale;
 
   const rotationDeg = Math.atan2(B, A) * 180 / Math.PI;
 
